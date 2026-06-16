@@ -1,23 +1,23 @@
-# PHP Mini Equipment Router
+# Mini Equipment Borrow Portal (PHP Lab 04)
 
-Week 3 PHP Lab - Front Controller, Router, Controllers and Standard Response.
+Hệ thống quản lý đăng ký mượn thiết bị được xây dựng bằng PHP thuần (Front Controller Pattern, Router, MVC Architecture). Dự án tập trung vào bảo mật luồng dữ liệu Form và Session.
 
-## Install
+## Tính năng nổi bật (Security Focus)
 
-composer dump-autoload
+- **Secure Form:** Đọc input an toàn, chuẩn hóa `trim()`, escape output `htmlspecialchars()` chống XSS.
+- **Validation & PRG:** Server-side validation, hiển thị lỗi chính xác từng field, giữ lại `old_input`. Áp dụng luồng Post-Redirect-Get để tránh lỗi submit trùng.
+- **Anti-spam:** Tích hợp bẫy Honeypot ẩn và Rate limit giới hạn thời gian gửi (chặn spam liên tục dưới 5s).
+- **Session Security:** Cấu hình Cookie flags (HttpOnly, SameSite=Lax), chống Session Fixation bằng `session_regenerate_id()`, Idle timeout (15 phút) và Clean Logout.
 
-## Run
+## Yêu cầu hệ thống
 
-php -S localhost:8000 -t public public/index.php
+- PHP 8.0+
+- Composer
 
-## Routes
+## Hướng dẫn cài đặt và chạy dự án
 
-GET /
-GET /health
-GET /products
-GET /products/create
-POST /products
-GET /login
-POST /login
-GET /logout
-GET /go-home# php-lab04-equipment-portal
+1. Clone repository về máy:
+   ```bash
+   git clone [https://github.com/USERNAME/php-lab04-equipment-portal.git](https://github.com/USERNAME/php-lab04-equipment-portal.git)
+   cd php-lab04-equipment-portal
+   ```
