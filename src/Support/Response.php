@@ -11,15 +11,19 @@ class Response
         http_response_code($status);
         header('Content-Type: text/html; charset=UTF-8');
 
+        // Giải nén mảng data thành các biến riêng biệt để dùng trong View
         extract($data, EXTR_SKIP);
 
+        // Đường dẫn tới view con (ví dụ: views/equipment/create.php)
         $viewPath = dirname(__DIR__, 2) . '/views/' . $view . '.php';
 
         if (!file_exists($viewPath)) {
             self::notFound('View not found: ' . $view);
         }
 
-        require $viewPath;
+        // BẮT BỘC LÀM Ở LAB 04:
+        // Nạp layout chung. Bên trong layout.php sẽ có lệnh `require $viewPath;` để nhúng nội dung trang con vào.
+        require dirname(__DIR__, 2) . '/views/layout.php';
         exit;
     }
 

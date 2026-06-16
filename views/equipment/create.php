@@ -1,61 +1,57 @@
-<?php
-$title = $title ?? 'Create Equipment';
-$error = $error ?? null;
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?= htmlspecialchars($title) ?></title>
-    <link rel="stylesheet" href="/assets/style.css">
-</head>
-<body>
-    <header class="topbar">
-        <strong>PHP Mini Equipment Router</strong>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/equipment">Equipment</a>
-            <a href="/equipment/create">Create Equipment</a>
-            <a href="/health">Health</a>
-            <a href="/login">Login</a>
-            <a href="/about">About</a>
-        </nav>
-    </header>
+<div class="page-header">
+    <div>
+        <h1><?= h($title) ?></h1>
+        <p>Form này submit an toàn đến <code>POST /equipment</code>.</p>
+    </div>
+</div>
 
-    <main class="container">
-        <h1>Create Equipment</h1>
-        <p>This form submits to <code>POST /equipment</code>.</p>
+<?php if (!empty($errors['_global'])): ?>
+    <div class="alert danger"><?= h($errors['_global']) ?></div>
+<?php endif; ?>
 
-        <?php if ($error): ?>
-            <div class="alert danger">
-                <?= htmlspecialchars($error) ?>
-            </div>
-        <?php endif; ?>
+<form method="post" action="/equipment" class="form-card">
+    <div class="form-group">
+        <label>Họ và tên</label>
+        <input name="name" value="<?= h($old['name'] ?? '') ?>" placeholder="Ví dụ: Nguyễn Văn A">
+        <?php if (!empty($errors['name'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['name']) ?></div><?php endif; ?>
+    </div>
 
-        <form class="form-card" method="POST" action="/equipment">
-            <div class="form-group">
-                <label>Equipment name</label>
-                <input type="text" name="name" placeholder="Forklift 3-Ton">
-            </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input name="email" value="<?= h($old['email'] ?? '') ?>" placeholder="student@example.com">
+        <?php if (!empty($errors['email'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['email']) ?></div><?php endif; ?>
+    </div>
 
-            <div class="form-group">
-                <label>Category</label>
-                <input type="text" name="category" placeholder="Heavy Machinery">
-            </div>
+    <div class="form-group">
+        <label>Số điện thoại</label>
+        <input name="phone" value="<?= h($old['phone'] ?? '') ?>" placeholder="0901234567">
+        <?php if (!empty($errors['phone'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['phone']) ?></div><?php endif; ?>
+    </div>
 
-            <div class="form-group">
-                <label>Price</label>
-                <input type="number" name="price" placeholder="450000000">
-            </div>
+    <div class="form-group">
+        <label>Loại thiết bị</label>
+        <select name="equipment_type" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px;">
+            <option value="">-- Chọn thiết bị cần mượn --</option>
+            <?php foreach ($allowedEquipment as $eq): ?>
+                <option value="<?= h($eq) ?>" <?= (($old['equipment_type'] ?? '') === $eq) ? 'selected' : '' ?>>
+                    <?= h(ucfirst($eq)) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <?php if (!empty($errors['equipment_type'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['equipment_type']) ?></div><?php endif; ?>
+    </div>
 
-            <div class="form-group">
-                <label>Quantity</label>
-                <input type="number" name="quantity" placeholder="5">
-            </div>
+    <div class="form-group">
+        <label>Mục đích mượn</label>
+        <textarea name="purpose" rows="4" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; font-family: inherit;"><?= h($old['purpose'] ?? '') ?></textarea>
+        <?php if (!empty($errors['purpose'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['purpose']) ?></div><?php endif; ?>
+    </div>
 
-            <button class="button" type="submit">Save Equipment</button>
-            <a class="button secondary" href="/equipment">Back to Equipment</a>
-        </form>
-    </main>
-</body>
-</html>
+    <div style="display:none;">
+        <label>Website (Để trống)</label>
+        <input name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <button class="button" type="submit" style="margin-top: 10px;">Gửi yêu cầu mượn</button>
+    <a class="button secondary" href="/equipment" style="margin-top: 10px;">Quay lại</a>
+</form>

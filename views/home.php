@@ -1,74 +1,120 @@
-<?php
-$title        = $title ?? 'Home';
-$message      = $message ?? '';
-$loginSuccess = ($_GET['login'] ?? '') === 'success';
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?= htmlspecialchars($title) ?></title>
-    <link rel="stylesheet" href="/assets/style.css">
-</head>
-<body>
-    <header class="topbar">
-        <strong>PHP Mini Equipment Router</strong>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/equipment">Equipment</a>
-            <a href="/equipment/create">Create Equipment</a>
-            <a href="/health">Health</a>
-            <a href="/login">Login</a>
-            <a href="/logout">Logout</a>
-            <a href="/about">About</a>
-        </nav>
-    </header>
+<style>
+    /* CSS dành riêng cho trang Home (Dark Mode) */
+    .home-wrapper {
+        background-color: #050505;
+        color: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        margin-top: -10px;
+        /* Đẩy lên sát navbar hơn một chút */
+    }
 
-    <main class="container">
-        <?php if ($loginSuccess): ?>
-            <div class="alert success">
-                Login request processed successfully. You were redirected to Home.
-            </div>
-        <?php endif; ?>
+    .home-header h1 {
+        font-size: 32px;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
 
-        <section class="hero">
-            <h1>Mini Equipment Routing App</h1>
-            <p><?= htmlspecialchars($message) ?></p>
-        </section>
+    .home-header p {
+        color: #9ca3af;
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
 
-        <section class="grid">
-            <div class="card">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
-                </svg>
-                <h3>HTML Response</h3>
-                <p>Visit <code>/</code> or <code>/equipment</code>.</p>
-            </div>
+    .home-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
 
-            <div class="card">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                </svg>
-                <h3>JSON Response</h3>
-                <p>Visit <code>/health</code> or <code>/api/equipment</code>.</p>
-            </div>
+    .home-card {
+        background-color: #000000;
+        border: 1px solid #1f2937;
+        border-radius: 12px;
+        padding: 24px;
+        transition: transform 0.2s, border-color 0.2s;
+    }
 
-            <div class="card">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-                </svg>
-                <h3>Redirect Response</h3>
-                <p>Visit <code>/go-home</code> or login form.</p>
-            </div>
+    .home-card:hover {
+        transform: translateY(-4px);
+        border-color: #374151;
+    }
 
-            <div class="card">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <h3>404 / 405</h3>
-                <p>Try <code>/unknown</code> or <code>POST /health</code>.</p>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .icon-1 {
+        background-color: #0ea5e9;
+    }
+
+    /* Xanh dương */
+    .icon-2 {
+        background-color: #22c55e;
+    }
+
+    /* Xanh lá */
+    .icon-3 {
+        background-color: #d97706;
+    }
+
+    /* Cam */
+    .icon-4 {
+        background-color: #c084fc;
+    }
+
+    /* Tím */
+
+    .home-card h3 {
+        font-size: 20px;
+        margin: 0 0 12px 0;
+        color: #ffffff;
+    }
+
+    .home-card p {
+        color: #9ca3af;
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 0;
+    }
+</style>
+
+<div class="home-wrapper">
+    <div class="home-header">
+        <h1>Lab04 - Secure Forms & Session Login Flow</h1>
+        <p>Week 4 + Week 5: GET/POST, Validation, PRG, Anti-spam, Session, Login/Logout</p>
+    </div>
+
+    <div class="home-grid">
+        <div class="home-card">
+            <div class="icon-box icon-1">1</div>
+            <h3>Secure Form</h3>
+            <p>Đọc input an toàn, escape output, giữ dữ liệu cũ khi lỗi.</p>
+        </div>
+        <div class="home-card">
+            <div class="icon-box icon-2">2</div>
+            <h3>Validation + PRG</h3>
+            <p>Validate server-side, flash errors, redirect để tránh submit trùng.</p>
+        </div>
+        <div class="home-card">
+            <div class="icon-box icon-3">3</div>
+            <h3>Anti-spam</h3>
+            <p>Honeypot và rate limit đơn giản bằng session.</p>
+        </div>
+        <div class="home-card">
+            <div class="icon-box icon-4">4</div>
+            <h3>Login/Session</h3>
+            <p>Cookie flags, regenerate, timeout, logout sạch.</p>
+        </div>
+    </div>
+</div>

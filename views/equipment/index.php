@@ -1,85 +1,38 @@
-<?php
-$title     = $title ?? 'Equipment';
-$equipment = $equipment ?? [];
-$created   = $created ?? false;
+<div class="page-header">
+    <div>
+        <h1><?= h($title) ?></h1>
+        <p>Danh sách các yêu cầu mượn thiết bị được đọc từ <code>storage/equipment_requests.json</code>.</p>
+    </div>
+    <a class="button" href="/equipment/create">Tạo yêu cầu mượn</a>
+</div>
 
-function stockStatus(int $quantity): string
-{
-    if ($quantity <= 0) return 'Out of stock';
-    if ($quantity <= 5) return 'Low stock';
-    return 'Available';
-}
-
-function stockClass(int $quantity): string
-{
-    if ($quantity <= 0) return 'danger';
-    if ($quantity <= 5) return 'warning';
-    return 'success';
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?= htmlspecialchars($title) ?></title>
-    <link rel="stylesheet" href="/assets/style.css">
-</head>
-<body>
-    <header class="topbar">
-        <strong>PHP Mini Equipment Router</strong>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/equipment">Equipment</a>
-            <a href="/equipment/create">Create Equipment</a>
-            <a href="/health">Health</a>
-            <a href="/login">Login</a>
-            <a href="/about">About</a>
-        </nav>
-    </header>
-
-    <main class="container">
-        <?php if ($created): ?>
-            <div class="alert success">
-                Equipment form submitted successfully. Redirect response worked.
-            </div>
-        <?php endif; ?>
-
-        <div class="page-header">
-            <div>
-                <h1>Equipment List</h1>
-                <p>This page is handled by EquipmentController@index.</p>
-            </div>
-            <a class="button" href="/equipment/create">Create Equipment</a>
-        </div>
-
-        <table>
-            <thead>
+<table class="table" style="width: 100%; border-collapse: collapse; background: white;">
+    <thead>
+        <tr style="background: #f1f5f9;">
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Mã YC</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Họ tên</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Email</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">SĐT</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Thiết bị</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0; text-align: left;">Ngày mượn</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (empty($items)): ?>
+            <tr>
+                <td colspan="6" style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Chưa có yêu cầu mượn nào.</td>
+            </tr>
+        <?php else: ?>
+            <?php foreach ($items as $item): ?>
                 <tr>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><?= h($item['id']) ?></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><?= h($item['name']) ?></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><?= h($item['email']) ?></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><?= h($item['phone']) ?></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: bold; color: #2563eb;"><?= h(ucfirst($item['equipment_type'])) ?></td>
+                    <td style="padding: 12px; border: 1px solid #e2e8f0;"><?= h($item['created_at']) ?></td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($equipment as $item): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($item['sku']) ?></td>
-                        <td><?= htmlspecialchars($item['name']) ?></td>
-                        <td><?= htmlspecialchars($item['category']) ?></td>
-                        <td><?= number_format($item['price']) ?> VND</td>
-                        <td><?= htmlspecialchars((string) $item['quantity']) ?></td>
-                        <td>
-                            <span class="badge <?= stockClass((int) $item['quantity']) ?>">
-                                <?= stockStatus((int) $item['quantity']) ?>
-                            </span>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </main>
-</body>
-</html>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </tbody>
+</table>
