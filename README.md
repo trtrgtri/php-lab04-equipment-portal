@@ -1,4 +1,4 @@
-# PHP Mini Product Router
+# PHP Mini Equipment Router
 
 Week 3 PHP Lab - Front Controller, Router, Controllers and Standard Response.
 
@@ -20,4 +20,4 @@ POST /products
 GET /login
 POST /login
 GET /logout
-GET /go-home
+GET /go-home# php-lab04-equipment-portal
