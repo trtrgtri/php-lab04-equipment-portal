@@ -1,3 +1,6 @@
 /vendor/
 .DS_Store
 Thumbs.db
+
+# Bỏ qua dữ liệu runtime của Lab04
+/storage/*.json
