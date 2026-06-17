@@ -1,3 +1,13 @@
+<?php
+
+/**
+ * @var string $title
+ * @var array $old
+ * @var array $errors
+ * @var array $allowedEquipment
+ */
+?>
+
 <div class="page-header">
     <div>
         <h1><?= h($title) ?></h1>

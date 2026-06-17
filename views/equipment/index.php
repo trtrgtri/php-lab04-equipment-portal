@@ -1,3 +1,10 @@
+<?php
+
+/**
+ * @var string $title
+ * @var array $items
+ */
+?>
 <div class="page-header">
     <div>
         <h1><?= h($title) ?></h1>
