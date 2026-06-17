@@ -57,14 +57,9 @@
         <?php if (!empty($errors['purpose'])): ?><div style="color:#dc2626; font-size:14px; margin-top:4px;"><?= h($errors['purpose']) ?></div><?php endif; ?>
     </div>
 
-    <div style="display:none;">
-        <label>Website (Để trống)</label>
-        <input name="website" tabindex="-1" autocomplete="off">
-    </div>
-
-    <div style="display: none;">
-        <label>Website</label>
-        <input name="website" tabindex="-1" autocomplete="off">
+    <div style="display: none;" class="honeypot-field">
+        <label for="website">Website (Để trống):</label>
+        <input type="text" id="website" name="website" value="" tabindex="-1" autocomplete="off">
     </div>
 
     <button class="button" type="submit" style="margin-top: 10px;">Gửi yêu cầu mượn</button>

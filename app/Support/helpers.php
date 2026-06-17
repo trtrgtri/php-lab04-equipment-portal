@@ -45,18 +45,15 @@ function require_login(): void
 // 7. Kiểm tra Timeout (15 phút nhàn rỗi)
 function check_session_timeout(): void
 {
-    $idleLimit = 15 * 60; // 15 phút
-
-    if (!isset($_SESSION['user_id'])) {
-        return;
-    }
-
-    $last = $_SESSION['last_activity_at'] ?? time();
-    if (time() - $last > $idleLimit) {
-        logout_clean();
-        session_start();
-        flash_set('error', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-        redirect('/login');
+    $idleLimit = 60 * 15;
+    if (isset($_SESSION['last_activity_at'])) {
+        if (time() - $_SESSION['last_activity_at'] > $idleLimit) {
+            logout_clean();
+            session_start();
+            session_regenerate_id(true);
+            flash_set('error', 'Phiên đăng nhập đã hết hạn do không hoạt động. Vui lòng đăng nhập lại.');
+            redirect('/login');
+        }
     }
 
     $_SESSION['last_activity_at'] = time();
