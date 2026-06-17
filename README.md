@@ -1,6 +1,26 @@
-Mini Equipment Borrow Request Portal (PHP Lab 04)Hệ thống quản lý đăng ký mượn thiết bị được xây dựng bằng PHP thuần (Front Controller Pattern, Router, MVC Architecture). Dự án tập trung vào bảo mật luồng dữ liệu Form, Validation và Session theo chuẩn Lab 04. 🚀 Các tính năng chính (Security Focus)Secure Form: Đọc input an toàn, chuẩn hóa trim(), escape output htmlspecialchars() chống XSS. Validation & PRG: Server-side validation, hiển thị lỗi chính xác từng field, giữ lại old_input. Áp dụng luồng Post-Redirect-Get để tránh lỗi submit trùng. Anti-spam: Tích hợp bẫy Honeypot ẩn và Rate limit giới hạn thời gian (chặn spam liên tục dưới 5 giây). Session Security: Cấu hình Cookie flags (HttpOnly, SameSite=Lax), chống Session Fixation bằng session_regenerate_id(), Idle timeout (15 phút) và Clean Logout. 🛠️ Hướng dẫn cài đặt & Chạy dự án1. Yêu cầuPHP 8.0 trở lên Composer 2. Các bước chạyClone project:Bashgit clone [URL_REPO_CUA_BAN]
+# Mini Equipment Borrow Request Portal
+
+Cổng đăng ký mượn thiết bị, xây dựng bằng **PHP thuần** (không framework, không database). Dự án thuộc **Lab04 — PHP Secure Forms, PRG, Anti-spam & Session Login Flow**, tập trung vào xử lý form an toàn và luồng đăng nhập/phiên bảo mật.
+
+## 1. Tính năng chính
+
+- **Front Controller + Router:** mọi request qua `public/index.php`, phân loại GET/POST và bắt lỗi 404/405.
+- **Form bảo mật 3 lớp:** đọc input an toàn (`?? ''`), chuẩn hóa (`trim()`), escape output chống XSS (`htmlspecialchars()`).
+- **Validation server-side theo trình tự:** Required → Format → Logic (in-list, độ dài), lỗi hiển thị từng field, giữ dữ liệu cũ (sticky form).
+- **PRG (Post-Redirect-Get):** chống bấm F5 gửi trùng.
+- **Flash message:** thông báo chỉ hiện một lần.
+- **Anti-spam:** honeypot và rate limit.
+- **Bảo mật Session/Login:** cookie flags (HttpOnly, SameSite, Secure), `session_regenerate_id()` chống Session Fixation, idle timeout, clean logout.
+
+## 2. Yêu cầu môi trường
+
+- PHP >= 8.0
+- Composer
+
+## 3. Cài đặt & chạy
+
+```bash
 cd php-lab04-equipment-portal
-Cập nhật Autoload:Để hệ thống nhận diện các Class và file Helper, chạy lệnh:Bashcomposer dump-autoload
-Khởi động Server:Chạy tại thư mục gốc của project:Bashphp -S localhost:8000 -t public
-Truy cập:
-Mở trình duyệt tại http://localhost:8000. Tài khoản demo: student@example.com / 123456🛣️ Danh sách RoutesMethodRouteController@ActionMô tảGET/HomeController@indexTrang chủ giới thiệu GET/equipmentEquipmentController@indexDanh sách yêu cầu mượn GET/equipment/createEquipmentController@createForm đăng ký mượn POST/equipmentEquipmentController@storeLưu dữ liệu vào JSON GET/loginAuthController@loginForm đăng nhập POST/loginAuthController@handleLoginXử lý login + Regenerate Session POST/logoutAuthController@logoutLogout sạch (Xóa Session & Cookie) GET/dashboardDashboardController@indexDashboard (yêu cầu login) 🛡️ Kiểm thử kỹ thuật (T01 - T16)Dự án đã vượt qua các bài kiểm tra về:Anti-spam: Thử điền vào field Honeypot (website) hoặc spam submit trong < 5s sẽ bị chặn. PRG: Submit thành công sẽ redirect về trang danh sách, refresh không tạo dữ liệu trùng. Session Guard: Truy cập /dashboard hoặc /equipment/delete khi chưa login sẽ bị đẩy về /login. Dự án được thực hiện nhằm mục đích học tập môn Phát triển ứng dụng Web - Lab 04.
+composer dump-autoload
+php -S localhost:8000 -t public
+```
