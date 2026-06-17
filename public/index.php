@@ -6,7 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\HealthController;
 use App\Controllers\HomeController;
 use App\Controllers\EquipmentController;
-use App\Controllers\DashboardController; // Thêm controller này
+use App\Controllers\DashboardController;
 use App\Core\Router;
 use App\Controllers\AboutController;
 use App\Controllers\Api\EquipmentApiController;
@@ -16,7 +16,9 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 // =============== BẮT ĐẦU LAB 04: CẤU HÌNH SESSION ===============
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-
+session_set_cookie_params([
+    'secure' => $isHttps,
+]);
 session_name('LAB04SESSID');
 session_set_cookie_params([
     'lifetime' => 0,
