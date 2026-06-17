@@ -1,12 +1,11 @@
 <style>
-    /* CSS dành riêng cho trang Home (Dark Mode) */
+    /* CSS dành riêng cho trang Home (Light Mode) */
     .home-wrapper {
-        background-color: #050505;
-        color: #ffffff;
-        padding: 40px;
-        border-radius: 12px;
-        margin-top: -10px;
-        /* Đẩy lên sát navbar hơn một chút */
+        background-color: transparent;
+        /* Để trong suốt để đồng bộ với nền web */
+        color: #0f172a;
+        /* Chữ màu tối */
+        padding: 20px 0;
     }
 
     .home-header h1 {
@@ -17,7 +16,8 @@
     }
 
     .home-header p {
-        color: #9ca3af;
+        color: #64748b;
+        /* Xám nhạt */
         font-size: 16px;
         margin-bottom: 40px;
     }
@@ -29,16 +29,21 @@
     }
 
     .home-card {
-        background-color: #000000;
-        border: 1px solid #1f2937;
+        background-color: #ffffff;
+        /* Nền trắng thẻ card */
+        border: 1px solid #e2e8f0;
+        /* Viền xám nhạt */
         border-radius: 12px;
         padding: 24px;
-        transition: transform 0.2s, border-color 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        /* Đổ bóng nhẹ cho thẻ nổi lên */
     }
 
     .home-card:hover {
         transform: translateY(-4px);
-        border-color: #374151;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e1;
     }
 
     .icon-box {
@@ -50,10 +55,12 @@
         justify-content: center;
         font-size: 24px;
         font-weight: bold;
-        color: #000000;
+        color: #ffffff;
+        /* Số màu trắng nổi bật trên nền màu */
         margin-bottom: 20px;
     }
 
+    /* Giữ lại màu đặc trưng cho từng khối */
     .icon-1 {
         background-color: #0ea5e9;
     }
@@ -65,12 +72,12 @@
 
     /* Xanh lá */
     .icon-3 {
-        background-color: #d97706;
+        background-color: #f59e0b;
     }
 
     /* Cam */
     .icon-4 {
-        background-color: #c084fc;
+        background-color: #a855f7;
     }
 
     /* Tím */
@@ -78,11 +85,11 @@
     .home-card h3 {
         font-size: 20px;
         margin: 0 0 12px 0;
-        color: #ffffff;
+        color: #0f172a;
     }
 
     .home-card p {
-        color: #9ca3af;
+        color: #475569;
         font-size: 14px;
         line-height: 1.5;
         margin: 0;
