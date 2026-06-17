@@ -115,7 +115,6 @@ class EquipmentController
         return $errors;
     }
 
-    // --- Logic xử lý file JSON ---
 
     private function storageFile(): string
     {
@@ -145,7 +144,28 @@ class EquipmentController
             'created_at' => date('Y-m-d H:i:s'),
         ];
 
-        // Lưu file JSON giữ nguyên tiếng Việt và fomat đẹp
         file_put_contents($this->storageFile(), json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+
+    public function delete(): void
+    {
+        require_login();
+
+        $id = $_POST['id'] ?? '';
+        $filePath = dirname(__DIR__, 2) . '/storage/equipment_requests.json';
+
+        if (file_exists($filePath)) {
+            $items = json_decode(file_get_contents($filePath), true) ?? [];
+
+            $newItems = array_filter($items, function ($item) use ($id) {
+                return $item['id'] !== $id;
+            });
+
+            file_put_contents($filePath, json_encode(array_values($newItems), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+            flash_set('success', 'Đã xóa bản ghi ' . $id . ' thành công!');
+        }
+
+        redirect('/equipment');
     }
 }

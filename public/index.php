@@ -65,6 +65,8 @@ $router->get('/about', [AboutController::class, 'index']);
 $router->get('/api/equipment', [EquipmentApiController::class, 'index']);
 $router->get('/contact', [ContactController::class, 'index']);
 
+$router->post('/equipment/delete', [EquipmentController::class, 'delete']);
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
