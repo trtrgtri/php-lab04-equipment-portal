@@ -1,104 +1,81 @@
 # Mini Equipment Borrow Request Portal
 
 Ứng dụng mô phỏng quy trình đăng ký mượn thiết bị học tập (laptop, máy chiếu, bộ phát Wi-Fi,...) được xây dựng bằng **PHP thuần** (không framework, không database).
-
 Dự án thuộc **Lab04 – PHP Secure Forms, PRG, Anti-spam & Session Login Flow**, tập trung vào xử lý form an toàn và quản lý session.
 
-## Chức năng chính
+## 1. Chức năng chính
 
-- Đăng nhập bằng tài khoản mẫu.
-- Gửi yêu cầu mượn thiết bị qua form.
-- Validation phía server và hiển thị lỗi theo từng trường.
-- Sticky form: giữ lại dữ liệu đã nhập khi validation thất bại.
-- Áp dụng **PRG (Post-Redirect-Get)** để tránh gửi trùng khi refresh.
-- Sử dụng **flash message** cho các thông báo ngắn hạn.
-- Chống spam bằng **honeypot** và **rate limit**.
-- Quản lý session an toàn với `session_regenerate_id()`, idle timeout và clean logout.
+- **Đăng nhập:** Truy cập Dashboard bằng tài khoản mẫu.
+- **Secure Form:** Gửi yêu cầu mượn thiết bị, validation phía server và hiển thị lỗi theo từng trường.
+- **Sticky form:** Giữ lại dữ liệu đã nhập khi validation thất bại.
+- **PRG (Post-Redirect-Get):** Tránh tình trạng gửi trùng dữ liệu khi refresh (F5).
+- **Flash message:** Hiển thị các thông báo ngắn hạn (thành công/lỗi) và tự xóa sau 1 lần tải trang.
+- **Anti-spam:** Bẫy bot bằng field ẩn (honeypot) và chặn gửi liên tục bằng rate limit.
+- **Bảo mật Session:** Chống Session Fixation bằng `session_regenerate_id()`, tự động đăng xuất (idle timeout) và clean logout.
 
-## Cài đặt và chạy
+## 2. Cài đặt và chạy
+
+Yêu cầu hệ thống: PHP >= 8.0 & Composer. Chạy các lệnh sau tại thư mục gốc chứa `composer.json`:
 
 ```bash
 composer dump-autoload
 php -S localhost:8000 -t public
+
 ```
 
-Truy cập:
+Truy cập: `http://localhost:8000`
+Tài khoản demo: **student@example.com** / **123456**
 
-```text
-http://localhost:8000
+## 3. Danh sách Route
+
+| Method | URL                 | Chức năng                       |
+| ------ | ------------------- | ------------------------------- |
+| `GET`  | `/`                 | Trang chủ                       |
+| `GET`  | `/equipment`        | Danh sách yêu cầu mượn          |
+| `GET`  | `/equipment/create` | Form đăng ký mượn thiết bị      |
+| `POST` | `/equipment`        | Gửi yêu cầu mượn (Lưu JSON)     |
+| `POST` | `/equipment/delete` | Xóa yêu cầu (Yêu cầu đăng nhập) |
+| `GET`  | `/login`            | Trang đăng nhập                 |
+| `POST` | `/login`            | Xử lý đăng nhập                 |
+| `POST` | `/logout`           | Đăng xuất                       |
+| `GET`  | `/dashboard`        | Dashboard (Yêu cầu đăng nhập)   |
+
+_(URL không tồn tại → 404 Not Found; Route tồn tại nhưng sai method → 405 Method Not Allowed)_
+
+## 4. Hướng dẫn kiểm thử nhanh (T01–T16)
+
+| Mã  | Kịch bản                                                      | Kết quả mong đợi                             |
+| --- | ------------------------------------------------------------- | -------------------------------------------- |
+| T01 | Mở `/equipment/create` và submit form                         | `POST /equipment` được xử lý                 |
+| T02 | Bỏ trống các trường bắt buộc                                  | Redirect về form, hiển thị lỗi               |
+| T03 | Nhập email `abc@`                                             | Báo email không đúng định dạng               |
+| T04 | Nhập phone `abc123`                                           | Báo lỗi số điện thoại                        |
+| T05 | Dùng DevTools sửa `equipment_type` thành giá trị không hợp lệ | Bị chặn bởi validation                       |
+| T06 | Điền field honeypot `website`                                 | Request bị từ chối                           |
+| T07 | Submit 2 lần trong dưới 5 giây                                | Báo gửi quá nhanh                            |
+| T08 | Submit hợp lệ rồi nhấn F5 ở trang danh sách                   | Không tạo dữ liệu trùng                      |
+| T09 | Nhập `<script>alert(1)</script>`                              | Script được escape thành text                |
+| T10 | Đăng nhập sai mật khẩu                                        | Redirect về login và báo lỗi                 |
+| T11 | Đăng nhập đúng tài khoản demo                                 | Redirect dashboard, regenerate session       |
+| T12 | Truy cập `/dashboard` khi chưa login                          | Redirect về `/login`                         |
+| T13 | Logout bằng POST                                              | Session bị xóa, không truy cập lại dashboard |
+| T14 | Giảm idle timeout rồi chờ quá hạn                             | Bị đăng xuất và báo hết phiên                |
+| T15 | Kiểm tra cookie session bằng DevTools                         | Có HttpOnly, SameSite=Lax                    |
+| T16 | Truy cập URL không tồn tại hoặc sai method                    | Trả về 404 hoặc 405                          |
+
+## 5. Lưu trữ dữ liệu
+
+- Yêu cầu mượn được lưu tại: `storage/equipment_requests.json`. Dự án sử dụng cờ `JSON_UNESCAPED_UNICODE` để đảm bảo lưu đúng font tiếng Việt.
+- Mật khẩu tài khoản được băm an toàn bằng `password_hash()` và xác thực bằng `password_verify()`.
+
+## 6. Hạn chế và hướng phát triển
+
+Trong phạm vi Lab04, dự án cố tình sử dụng file JSON thay cho database và chưa triển khai CSRF token ẩn. Nếu mở rộng thành hệ thống thực tế, cần bổ sung:
+
+- Chuyển đổi sang PDO/MySQL để tránh lỗi xung đột ghi file (Race Condition).
+- Thêm CSRF Token cho mọi form `POST` để chống giả mạo request hoàn toàn.
+- Phân quyền người dùng (RBAC) và bổ sung luồng duyệt/từ chối đơn mượn.
+
 ```
 
-Tài khoản demo:
-
-```text
-Email: student@example.com
-Password: 123456
 ```
-
-> Lưu ý: chạy các lệnh trên tại thư mục gốc chứa `composer.json`.
-
-## Các route chính
-
-| Method | URL                 | Chức năng                  |
-| ------ | ------------------- | -------------------------- |
-| GET    | `/`                 | Trang chủ                  |
-| GET    | `/equipment`        | Danh sách yêu cầu mượn     |
-| GET    | `/equipment/create` | Form đăng ký mượn thiết bị |
-| POST   | `/equipment`        | Gửi yêu cầu mượn           |
-| POST   | `/equipment/delete` | Xóa yêu cầu                |
-| GET    | `/login`            | Trang đăng nhập            |
-| POST   | `/login`            | Xử lý đăng nhập            |
-| POST   | `/logout`           | Đăng xuất                  |
-| GET    | `/dashboard`        | Dashboard                  |
-
-- URL không tồn tại → **404 Not Found**
-- Route tồn tại nhưng sai method → **405 Method Not Allowed**
-
-## Kiểm thử
-
-Dự án được kiểm thử với **16 test case (T01–T16)**. Mô tả chi tiết và ảnh minh chứng được trình bày trong báo cáo PDF.
-
-Có thể kiểm tra nhanh bằng `curl` hoặc Postman:
-
-### Gửi form hợp lệ
-
-```bash
-curl -i -X POST http://localhost:8000/equipment \
-  -d "name=Tran Trong Tri&email=student@example.com&phone=0912345678&equipment_type=laptop&purpose=Muon de thuyet trinh&website="
-```
-
-### Sai method (logout chỉ chấp nhận POST)
-
-```bash
-curl -i -X GET http://localhost:8000/logout
-```
-
-### Route không tồn tại
-
-```bash
-curl -i http://localhost:8000/khong-ton-tai
-```
-
-## Lưu trữ dữ liệu
-
-Các yêu cầu mượn thiết bị được lưu tại:
-
-```text
-storage/equipment_requests.json
-```
-
-Dự án sử dụng `JSON_UNESCAPED_UNICODE` để đảm bảo dữ liệu tiếng Việt được lưu đúng định dạng.
-
-Mật khẩu tài khoản được băm bằng `password_hash()` và xác thực bằng `password_verify()`.
-
-## Hạn chế và hướng phát triển
-
-Trong phạm vi Lab04, dự án sử dụng file JSON thay cho database và chưa triển khai CSRF token.
-
-Nếu mở rộng thành hệ thống thực tế, có thể bổ sung:
-
-- PDO/MySQL hoặc hệ quản trị cơ sở dữ liệu khác.
-- CSRF token cho các form POST.
-- Logging và theo dõi hoạt động người dùng.
-- Phân quyền người dùng (RBAC).
-- Quy trình duyệt, từ chối hoặc hoàn trả thiết bị.
